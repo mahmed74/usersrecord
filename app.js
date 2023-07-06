@@ -1,5 +1,7 @@
+let BASEURL = "https://erin-tame-chick.cyclic.app";
+
 const getData = async () => {
-  const res = await axios.get("https://usersapimahmed.herokuapp.com/users");
+  const res = await axios.get(`${BASEURL}/users`);
   var data = res.data;
 
   // maping data into cards
@@ -64,7 +66,7 @@ const sendData = async () => {
   const address = document.getElementById("address").value;
 
   if (name && email && address) {
-    const res = await axios.post("https://usersapimahmed.herokuapp.com/user", {
+    const res = await axios.post(`${BASEURL}/user`, {
       name,
       email,
       address,
@@ -79,9 +81,10 @@ const sendData = async () => {
 };
 
 const handleDelete = async (i) => {
-  const res = await axios.delete(
-    `https://usersapimahmed.herokuapp.com/user/${i}`
-  );
+  const resGet = await axios.get(`${BASEURL}/users`);
+  var data = resGet.data;
+
+  const res = await axios.delete(`${BASEURL}/user/${data[i]._id}`);
   console.log(res);
   location.reload();
   //   console.log("i", i);
@@ -91,7 +94,7 @@ const handleUpdate = async (i) => {
   //   var name = document.getElementById("name").value;
   //   var email = document.getElementById("email").value;
   //   var address = document.getElementById("address").value;
-  var res = await axios.get("https://usersapimahmed.herokuapp.com/users");
+  var res = await axios.get(`${BASEURL}/users`);
   try {
     document.getElementById("name").value = res.data[i].name;
     document.getElementById("email").value = res.data[i].email;
@@ -101,7 +104,7 @@ const handleUpdate = async (i) => {
     RegisterBtn.disabled = true;
     updateBtn.disabled = false;
     updateBtn.onclick = () => {
-      Update(i);
+      Update(res.data[i]._id);
     };
   } catch (error) {
     console.log(error);
@@ -115,14 +118,11 @@ const Update = async (i) => {
 
   console.log({ name, email, address });
 
-  const res = await axios.put(
-    `https://usersapimahmed.herokuapp.com/user/${i}`,
-    {
-      name,
-      email,
-      address,
-    }
-  );
+  const res = await axios.put(`${BASEURL}/user/${i}`, {
+    name,
+    email,
+    address,
+  });
   location.reload();
   console.log(res);
 };
